@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/pets_117585.ico" type="image/x-icon">
+    <title>VacinaPet - Registrar Vacinas</title>
+    <link rel="stylesheet" href="stylespet.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Página Inicial</a></li>
+                <li><a href="add_pet.html">Adicionar Pet</a></li>
+                <li><a href="vacinas.html">Vacinas</a></li>
+                <li><a href="pets.html">Seus Pets</a></li>
+                <li><a href="logout.html">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Registrar Vacinas</h1>
+        <form action="vacinas.html" method="post">
+            <label for="nome_pet">Nome do Pet:</label>
+            <input type="text" id="nome_pet" name="nome_pet" required>
+
+            <label for="nome_vacina">Nome da Vacina:</label>
+            <input type="text" id="nome_vacina" name="nome_vacina" required>
+
+            <label for="data_ultima_dose">Dados da Última Dose:</label>
+            <input type="date" id="data_ultima_dose" name="data_ultima_dose" required>
+
+            <label for="data_proxima_dose">Data da Próxima Dose:</label>
+            <input type="date" id="data_proxima_dose" name="data_proxima_dose" required>
+
+            <h1>Registrar Medicações</h1>
+            <label for="nome_medicacao">Nome da Medicação:</label>
+            <input type="text" id="nome_medicacao" name="nome_medicacao" required>
+
+            <label for="frequencia">Tomar a cada:</label>
+            <select id="frequencia" name="frequencia" required>
+                <option value="a cada 2 horas">a cada 2 horas</option>
+                <option value="a cada 4 horas">a cada 4 horas</option>
+                <option value="a cada 6 horas">a cada 6 horas</option>
+                <option value="a cada 8 horas">a cada 8 horas</option>
+                <option value="a cada 12 horas">a cada 12 horas</option>
+                <option value="a cada 24 horas">a cada 24 horas</option>
+                <option value="a cada 48 horas">a cada 48 horas</option>
+                <option value="a cada 3 dias">a cada 3 dias</option>
+                <option value="a cada 4 dias">a cada 4 dias</option>
+                <option value="a cada 5 dias">a cada 5 dias</option>
+                <option value="a cada 6 dias">a cada 6 dias</option>
+                <option value="a cada 1 semana">a cada 1 semana</option>
+                <option value="a cada 2 semanas">a cada 2 semanas</option>
+                <option value="a cada 3 semanas">a cada 3 semanas</option>
+                <option value="a cada 1 mês">a cada 1 mês</option>
+            </select>
+
+            <button type="submit">Registrar</button>
+        </form>
+    </main>
+</body>
+</html>

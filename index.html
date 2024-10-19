@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/pets_117585.ico" type="image/x-icon">
+    <title>VacinaPet - Página Inicial</title>
+    <link rel="stylesheet" href="stylesp.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            border-radius: 10px;
+            width: 60%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .btn-delete {
+            background-color: #f44336;
+            margin-left: 10px;
+        }
+        .btn-delete:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Página Inicial</a></li>
+                <li><a href="add_pet.html">Adicionar Pet</a></li>
+                <li><a href="vacinas.html">Vacinas</a></li>
+                <li><a href="pets.html">Seus Pets</a></li>
+                <li><a href="logout.html">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Informações do Pet</h1>
+        <section class="pet-info">
+            <div class="pet-details">
+                <h2>Nome do Pet: Lucks</h2>
+                <p><strong>Espécie:</strong> Cão</p>
+                <p><strong>Raça:</strong> Labrador</p>
+                <p><strong>Data de Nascimento:</strong> 01/01/2020</p>
+                <p><strong>Sexo:</strong> Macho</p>
+            </div>
+
+            <div class="vaccine-info">
+                <div class="section-header">
+                    <h2>Vacinas</h2>
+                    <button class="btn-alterar" onclick="openModal('vacina')">Adicionar/Alterar Vacinas</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome da Vacina</th>
+                            <th>Data da Última Dose</th>
+                            <th>Data da Próxima Dose</th>
+                            <th>Situação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vacina-tbody">
+                        <tr>
+                            <td>Vacina A</td>
+                            <td>01/06/2024</td>
+                            <td>01/12/2024</td>
+                            <td class="situacao perto">Perto</td>
+                            <td><button onclick="editRow(this, 'vacina')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button></td>
+                        </tr>
+                        <tr>
+                            <td>Vacina B</td>
+                            <td>15/07/2024</td>
+                            <td>15/01/2025</td>
+                            <td class="situacao distante">Distante</td>
+                            <td><button onclick="editRow(this, 'vacina')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="medications">
+            <div class="section-header">
+                <h2>Medicações</h2>
+                <button class="btn-alterar" onclick="openModal('medicacao')">Adicionar/Alterar Medicações</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome do Remédio</th>
+                        <th>Momentos para Tomar</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="medicacao-tbody">
+                    <tr>
+                        <td>Bioflaxacin</td>
+                        <td>A cada 48 horas</td>
+                        <td><button onclick="editRow(this, 'medicacao')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button></td>
+                    </tr>
+                    <tr>
+                        <td>Coveli</td>
+                        <td>1 vez por semana (Toda Terça)</td>
+                        <td><button onclick="editRow(this, 'medicacao')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Alterar Informações</h2>
+            <form id="form-alterar" onsubmit="saveChanges(event)">
+                <!-- Campos do formulário serão preenchidos dinamicamente -->
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentEditType = '';
+        let currentEditRow = null;
+
+        function openModal(type) {
+            currentEditType = type;
+            var modal = document.getElementById("modal");
+            var form = document.getElementById("form-alterar");
+            form.innerHTML = '';
+
+            if (type === 'vacina') {
+                form.innerHTML = `
+                    <div class="form-group">
+                        <label for="nome-vacina">Nome da Vacina:</label>
+                        <input type="text" id="nome-vacina" name="nome-vacina" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="data-ultima-dose">Data da Última Dose:</label>
+                        <input type="date" id="data-ultima-dose" name="data-ultima-dose" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="data-proxima-dose">Data da Próxima Dose:</label>
+                        <input type="date" id="data-proxima-dose" name="data-proxima-dose" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="situacao">Situação:</label>
+                        <select id="situacao" name="situacao" required>
+                            <option value="perto">Perto</option>
+                            <option value="distante">Distante</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Salvar</button>
+                    </div>
+                `;
+            } else if (type === 'medicacao') {
+                form.innerHTML = `
+                    <div class="form-group">
+                        <label for="nome-remedio">Nome do Remédio:</label>
+                        <input type="text" id="nome-remedio" name="nome-remedio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="momentos-tomar">Momentos para Tomar:</label>
+                        <input type="text" id="momentos-tomar" name="momentos-tomar" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">Salvar</button>
+                    </div>
+                `;
+            }
+
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("modal");
+            modal.style.display = "none";
+            currentEditRow = null;
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById("modal");
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        function editRow(button, type) {
+            currentEditType = type;
+            currentEditRow = button.parentNode.parentNode;
+
+            var nome, dataUltimaDose, dataProximaDose, situacao, nomeRemedio, momentosTomar;
+
+            if (type === 'vacina') {
+                nome = currentEditRow.cells[0].innerText;
+                dataUltimaDose = currentEditRow.cells[1].innerText;
+                dataProximaDose = currentEditRow.cells[2].innerText;
+                situacao = currentEditRow.cells[3].innerText;
+                openModal(type);
+                document.getElementById('nome-vacina').value = nome;
+                document.getElementById('data-ultima-dose').value = dataUltimaDose;
+                document.getElementById('data-proxima-dose').value = dataProximaDose;
+                document.getElementById('situacao').value = situacao.toLowerCase();
+            } else if (type === 'medicacao') {
+                nomeRemedio = currentEditRow.cells[0].innerText;
+                momentosTomar = currentEditRow.cells[1].innerText;
+                openModal(type);
+                document.getElementById('nome-remedio').value = nomeRemedio;
+                document.getElementById('momentos-tomar').value = momentosTomar;
+            }
+        }
+
+        function deleteRow(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+        function saveChanges(event) {
+            event.preventDefault();
+
+            var nome, dataUltimaDose, dataProximaDose, situacao, nomeRemedio, momentosTomar;
+
+            if (currentEditType === 'vacina') {
+                nome = document.getElementById('nome-vacina').value;
+                dataUltimaDose = document.getElementById('data-ultima-dose').value;
+                dataProximaDose = document.getElementById('data-proxima-dose').value;
+                situacao = document.getElementById('situacao').value;
+
+                if (currentEditRow) {
+                    currentEditRow.cells[0].innerText = nome;
+                    currentEditRow.cells[1].innerText = dataUltimaDose;
+                    currentEditRow.cells[2].innerText = dataProximaDose;
+                    currentEditRow.cells[3].innerText = situacao.charAt(0).toUpperCase() + situacao.slice(1);
+                } else {
+                    var table = document.getElementById('vacina-tbody');
+                    var newRow = table.insertRow();
+                    newRow.insertCell(0).innerText = nome;
+                    newRow.insertCell(1).innerText = dataUltimaDose;
+                    newRow.insertCell(2).innerText = dataProximaDose;
+                    newRow.insertCell(3).innerText = situacao.charAt(0).toUpperCase() + situacao.slice(1);
+                    newRow.insertCell(4).innerHTML = `<button onclick="editRow(this, 'vacina')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button>`;
+                }
+            } else if (currentEditType === 'medicacao') {
+                nomeRemedio = document.getElementById('nome-remedio').value;
+                momentosTomar = document.getElementById('momentos-tomar').value;
+
+                if (currentEditRow) {
+                    currentEditRow.cells[0].innerText = nomeRemedio;
+                    currentEditRow.cells[1].innerText = momentosTomar;
+                } else {
+                    var table = document.getElementById('medicacao-tbody');
+                    var newRow = table.insertRow();
+                    newRow.insertCell(0).innerText = nomeRemedio;
+                    newRow.insertCell(1).innerText = momentosTomar;
+                    newRow.insertCell(2).innerHTML = `<button onclick="editRow(this, 'medicacao')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button>`;
+                }
+            }
+
+            closeModal();
+        }
+    </script>
+</body>
+</html>

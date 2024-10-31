@@ -140,6 +140,7 @@
                 <thead>
                     <tr>
                         <th>Nome do Remédio</th>
+                        <th>Doença</th>
                         <th>Momentos para Tomar</th>
                         <th>Ações</th>
                     </tr>
@@ -147,11 +148,13 @@
                 <tbody id="medicacao-tbody">
                     <tr>
                         <td>Bioflaxacin</td>
+                        <td>Infecção</td>
                         <td>A cada 48 horas</td>
                         <td><button onclick="editRow(this, 'medicacao')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button></td>
                     </tr>
                     <tr>
                         <td>Coveli</td>
+                        <td>Artrite</td>
                         <td>1 vez por semana (Toda Terça)</td>
                         <td><button onclick="editRow(this, 'medicacao')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button></td>
                     </tr>
@@ -212,15 +215,39 @@
                         <input type="text" id="nome-remedio" name="nome-remedio" required>
                     </div>
                     <div class="form-group">
+                        <label for="doenca-remedio">Doença:</label>
+                        <input type="text" id="doenca-remedio" name="doenca-remedio" required>
+                    </div>
+                    <div class="form-group">
                         <label for="momentos-tomar">Momentos para Tomar:</label>
                         <input type="text" id="momentos-tomar" name="momentos-tomar" required>
+                    </div>
+                    <div class="form
+                    <div class="form-group">
+                        <label for="momentos-tomar">Momentos para Tomar:</label>
+                        <select id="momentos-tomar" name="momentos-tomar" required>
+                            <option value="a cada 2 horas">A cada 2 horas</option>
+                            <option value="a cada 4 horas">A cada 4 horas</option>
+                            <option value="a cada 6 horas">A cada 6 horas</option>
+                            <option value="a cada 8 horas">A cada 8 horas</option>
+                            <option value="a cada 12 horas">A cada 12 horas</option>
+                            <option value="a cada 24 horas">A cada 24 horas</option>
+                            <option value="a cada 48 horas">A cada 48 horas</option>
+                            <option value="a cada 3 dias">A cada 3 dias</option>
+                            <option value="a cada 4 dias">A cada 4 dias</option>
+                            <option value="a cada 5 dias">A cada 5 dias</option>
+                            <option value="a cada 6 dias">A cada 6 dias</option>
+                            <option value="a cada 1 semana">A cada 1 semana</option>
+                            <option value="a cada 2 semanas">A cada 2 semanas</option>
+                            <option value="a cada 3 semanas">A cada 3 semanas</option>
+                            <option value="a cada 1 mês">A cada 1 mês</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <button type="submit">Salvar</button>
                     </div>
                 `;
             }
-
             modal.style.display = "block";
         }
 
@@ -230,85 +257,84 @@
             currentEditRow = null;
         }
 
-        window.onclick = function(event) {
-            var modal = document.getElementById("modal");
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
-
         function editRow(button, type) {
             currentEditType = type;
-            currentEditRow = button.parentNode.parentNode;
-
-            var nome, dataUltimaDose, dataProximaDose, situacao, nomeRemedio, momentosTomar;
+            currentEditRow = button.parentElement.parentElement;
+            openModal(type);
 
             if (type === 'vacina') {
-                nome = currentEditRow.cells[0].innerText;
-                dataUltimaDose = currentEditRow.cells[1].innerText;
-                dataProximaDose = currentEditRow.cells[2].innerText;
-                situacao = currentEditRow.cells[3].innerText;
-                openModal(type);
-                document.getElementById('nome-vacina').value = nome;
-                document.getElementById('data-ultima-dose').value = dataUltimaDose;
-                document.getElementById('data-proxima-dose').value = dataProximaDose;
-                document.getElementById('situacao').value = situacao.toLowerCase();
+                document.getElementById('nome-vacina').value = currentEditRow.cells[0].innerText;
+                document.getElementById('data-ultima-dose').value = currentEditRow.cells[1].innerText;
+                document.getElementById('data-proxima-dose').value = currentEditRow.cells[2].innerText;
+                document.getElementById('situacao').value = currentEditRow.cells[3].className.includes('perto') ? 'perto' : 'distante';
             } else if (type === 'medicacao') {
-                nomeRemedio = currentEditRow.cells[0].innerText;
-                momentosTomar = currentEditRow.cells[1].innerText;
-                openModal(type);
-                document.getElementById('nome-remedio').value = nomeRemedio;
-                document.getElementById('momentos-tomar').value = momentosTomar;
+                document.getElementById('nome-remedio').value = currentEditRow.cells[0].innerText;
+                document.getElementById('doenca-remedio').value = currentEditRow.cells[1].innerText;
+                document.getElementById('momentos-tomar').value = currentEditRow.cells[2].innerText;
             }
         }
 
         function deleteRow(button) {
-            var row = button.parentNode.parentNode;
-            row.parentNode.removeChild(row);
+            var row = button.parentElement.parentElement;
+            row.parentElement.removeChild(row);
         }
 
         function saveChanges(event) {
             event.preventDefault();
-
-            var nome, dataUltimaDose, dataProximaDose, situacao, nomeRemedio, momentosTomar;
+            var form = event.target;
 
             if (currentEditType === 'vacina') {
-                nome = document.getElementById('nome-vacina').value;
-                dataUltimaDose = document.getElementById('data-ultima-dose').value;
-                dataProximaDose = document.getElementById('data-proxima-dose').value;
-                situacao = document.getElementById('situacao').value;
+                var nomeVacina = form['nome-vacina'].value;
+                var dataUltimaDose = form['data-ultima-dose'].value;
+                var dataProximaDose = form['data-proxima-dose'].value;
+                var situacao = form['situacao'].value;
 
                 if (currentEditRow) {
-                    currentEditRow.cells[0].innerText = nome;
+                    currentEditRow.cells[0].innerText = nomeVacina;
                     currentEditRow.cells[1].innerText = dataUltimaDose;
                     currentEditRow.cells[2].innerText = dataProximaDose;
                     currentEditRow.cells[3].innerText = situacao.charAt(0).toUpperCase() + situacao.slice(1);
+                    currentEditRow.cells[3].className = 'situacao ' + situacao;
                 } else {
-                    var table = document.getElementById('vacina-tbody');
-                    var newRow = table.insertRow();
-                    newRow.insertCell(0).innerText = nome;
-                    newRow.insertCell(1).innerText = dataUltimaDose;
-                    newRow.insertCell(2).innerText = dataProximaDose;
-                    newRow.insertCell(3).innerText = situacao.charAt(0).toUpperCase() + situacao.slice(1);
-                    newRow.insertCell(4).innerHTML = `<button onclick="editRow(this, 'vacina')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button>`;
+                    var tableBody = document.getElementById('vacina-tbody');
+                    var newRow = tableBody.insertRow();
+                    newRow.innerHTML = `
+                        <td>${nomeVacina}</td>
+                        <td>${dataUltimaDose}</td>
+                        <td>${dataProximaDose}</td>
+                        <td class="situacao ${situacao}">${situacao.charAt(0).toUpperCase() + situacao.slice(1)}</td>
+                        <td><button onclick="editRow(this, 'vacina')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button></td>
+                    `;
                 }
             } else if (currentEditType === 'medicacao') {
-                nomeRemedio = document.getElementById('nome-remedio').value;
-                momentosTomar = document.getElementById('momentos-tomar').value;
+                var nomeRemedio = form['nome-remedio'].value;
+                var doencaRemedio = form['doenca-remedio'].value;
+                var momentosTomar = form['momentos-tomar'].value;
 
                 if (currentEditRow) {
                     currentEditRow.cells[0].innerText = nomeRemedio;
-                    currentEditRow.cells[1].innerText = momentosTomar;
+                    currentEditRow.cells[1].innerText = doencaRemedio;
+                    currentEditRow.cells[2].innerText = momentosTomar;
                 } else {
-                    var table = document.getElementById('medicacao-tbody');
-                    var newRow = table.insertRow();
-                    newRow.insertCell(0).innerText = nomeRemedio;
-                    newRow.insertCell(1).innerText = momentosTomar;
-                    newRow.insertCell(2).innerHTML = `<button onclick="editRow(this, 'medicacao')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button>`;
+                    var tableBody = document.getElementById('medicacao-tbody');
+                    var newRow = tableBody.insertRow();
+                    newRow.innerHTML = `
+                        <td>${nomeRemedio}</td>
+                        <td>${doencaRemedio}</td>
+                        <td>${momentosTomar}</td>
+                        <td><button onclick="editRow(this, 'medicacao')">Editar</button> <button class="btn-delete" onclick="deleteRow(this)">Excluir</button></td>
+                    `;
                 }
             }
 
             closeModal();
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById("modal");
+            if (event.target == modal) {
+                closeModal();
+            }
         }
     </script>
 </body>
